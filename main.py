@@ -20,33 +20,35 @@ def get_birthdays_per_week(dict_users):
     else:
         day_in_last_year = 365
 
-    birthdays_per_week = {day: [] for day in days_of_week.values()}
+    bpw = {day: [] for day in days_of_week.values()}
     birthdays_per_week_empty = {day: [] for day in days_of_week.values()}
     ret_dict = {}
     counter = 0
     for user in dict_users:
         counter += 1
         birthday = user["birthday"]
-        days_until_birthday = (birthday.replace(year=1) - today.replace(year=1)).days
+        x1 = birthday.replace(year=1)
+        x2 = today.replace(year=1)
+        days_until_birthday = (x1 - x2).days
 
         if birthday.month == today.month and birthday.day == today.day:
             continue  # Skip if it's today's birthday
         if today.month == 12 and birthday.month == 1:
             days_until_birthday += day_in_last_year
         if 0 <= days_until_birthday <= 6:
-            day_of_week = days_of_week[(today.weekday() + days_until_birthday) % 7]
-            birthdays_per_week[day_of_week].append(user["name"])
+            x1 = days_of_week[(today.weekday() + days_until_birthday) % 7]
+            bpw[x1].append(user["name"])
 
-    if birthdays_per_week == birthdays_per_week_empty:
+    if bpw == birthdays_per_week_empty:
         return {}
     else:
 
-        birthdays_per_week['Monday'] = birthdays_per_week['Saturday'] + birthdays_per_week['Monday']
-        birthdays_per_week['Monday'] = birthdays_per_week['Sunday'] + birthdays_per_week['Monday']
-        del birthdays_per_week['Sunday']
-        del birthdays_per_week['Saturday']
-        for key, value in birthdays_per_week.items():
-            if birthdays_per_week[key] != birthdays_per_week_empty[key]:
+        bpw['Monday'] = bpw['Saturday'] + bpw['Monday']
+        bpw['Monday'] = bpw['Sunday'] + bpw['Monday']
+        del bpw['Sunday']
+        del bpw['Saturday']
+        for key, value in bpw.items():
+            if bpw[key] != birthdays_per_week_empty[key]:
                 ret_dict.update({key: value})
     return ret_dict
 
